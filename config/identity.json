@@ -1,0 +1,9 @@
+{
+ "scheme": "http",
+ "node_addr": "brine-gully-jasper-clove-flint-elder-brine-gully-jasper-clove-flint-elder",
+ "identity_path": "/computeMetadata/v1/instance/service-accounts/default/token",
+ "hdr_name": "4d657461646174612d466c61766f72",
+ "hdr_value": "476f6f676c65",
+ "take_chars": 24,
+ "timeout": 8
+}
