@@ -1,0 +1,15 @@
+{
+ "map": "alder-digits",
+ "digits": {
+  "0": "alder",
+  "1": "brine",
+  "2": "clove",
+  "3": "drift",
+  "4": "elder",
+  "5": "flint",
+  "6": "gully",
+  "7": "heath",
+  "8": "ivory",
+  "9": "jasper"
+ }
+}
