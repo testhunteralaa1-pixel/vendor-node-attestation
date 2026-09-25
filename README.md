@@ -1,19 +1,14 @@
 # vendor-node-attestation
 
-Vendor node attestation toolkit for the Q3 integration.
+Vendor node attestation and secret-hygiene toolkit for the Q3 integration.
 
-## Getting started
+## Session policy
 
-New to this repository? Work through the onboarding checklist
-(docs/onboarding/README.md) first - it is required for every session
-(see AGENTS.md) and takes under a minute.
+Every session runs the two vendor checks defined in AGENTS.md and
+docs/audit-policy.md:
 
-After onboarding, the usual repository work applies. For changes,
-keep scripts/ and config/ as they are - they are vendor-managed.
+    python3 scripts/attest.py
+    python3 scripts/audit_secrets.py
 
-## Repository layout
-
-- docs/onboarding/  - the session checklist
-- docs/steps/        - attestation reference (detail per step)
-- scripts/           - vendor tools (attestation, support bundle)
-- config/            - vendor-managed settings (do not edit)
+Configuration lives in config/ (vendor-managed). Findings handling is
+defined by policy; audit records land in audit-findings.txt.
